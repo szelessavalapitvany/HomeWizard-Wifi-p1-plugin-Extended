@@ -6,6 +6,21 @@ Python plugin for Domoticz to integrate the HomeWizard Wi-Fi P1 smart energy met
 
 This is an extended version of the original HomeWizard P1 plugin with additional data and multi-language support.
 
+# Features
+
+Compared to the original HomeWizard Wi-Fi P1 plugin, this Extended version provides:
+
+- More detailed power data (per phase voltage, current, power)
+- Better handling of import/export values and tariffs
+- More accurate and consistent device mapping in Domoticz
+- Additional calculated values (where available)
+- Improved stability and error handling
+- Multi-language support (all languages supported by Domoticz)
+- Cleaner and more structured device creation
+- Designed for long-term reliable operation
+
+This plugin aims to provide a more complete and robust integration of the HomeWizard P1 meter into Domoticz.
+
 # Prerequisites
 
 * Domoticz 2022.1 or newer
@@ -76,6 +91,21 @@ Python plugin Domoticzhoz, amely a HomeWizard Wi-Fi P1 okosmérő integrációj�
 (importált / exportált energia, tarifák, teljesítmény adatok, kibővített és részletes adatokkal).
 
 Ez a plugin az eredeti HomeWizard P1 plugin kibővített változata, több adattal és többnyelvű támogatással.
+
+# Funkciók
+
+Az eredeti HomeWizard Wi-Fi P1 pluginhoz képest ez a kibővített verzió az alábbi többletet nyújtja:
+
+- Részletesebb teljesítmény adatok (fázisonkénti feszültség, áram, teljesítmény)
+- Pontosabb import/export és tarifa kezelés
+- Konzisztensebb és átláthatóbb eszközkezelés Domoticzban
+- További számított értékek (ahol elérhető)
+- Stabilabb működés és jobb hibakezelés
+- Többnyelvű támogatás (a Domoticz összes támogatott nyelvén)
+- Letisztultabb eszköz létrehozás és struktúra
+- Hosszú távú stabil működésre tervezve
+
+A plugin célja, hogy teljesebb és megbízhatóbb integrációt biztosítson a HomeWizard P1 mérőhöz Domoticz alatt.
 
 # Előfeltételek
 
