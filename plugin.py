@@ -1,7 +1,7 @@
 """
 HomeWizard P1 meter python plugin for Domoticz
 Author: szelessavmuhely.hu,
-Version: 1.0.0 (marcius 25, 2026) 
+Version: 1.1.0 (szeptember 10, 2026) 
 
 <plugin key="HOME_WIZARD_ELECTRIC_P1_METER" name="Home Wizard Electric P1 meter" author="szelessavmuhely.hu" version="1.0.0">
 	<description>
@@ -44,7 +44,6 @@ import itertools
 import re
 import os
 import heapq
-from distutils.version import LooseVersion
 
 class deviceparam:
 
