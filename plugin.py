@@ -1,11 +1,11 @@
 """
-HomeWizard P1 meter python plugin for Domoticz
+HomeWizard P1 meter extended python plugin for Domoticz
 Author: szelessavmuhely.hu,
-Version: 1.1.0 (szeptember 10, 2026) 
+Version: 1.1.1 (10-08-2026) 
 
-<plugin key="HOME_WIZARD_ELECTRIC_P1_METER" name="Home Wizard Electric P1 meter" author="szelessavmuhely.hu" version="1.0.0">
+<plugin key="HOME_WIZARD_ELECTRIC_P1_METER_EXTENDED" name="Home Wizard Electric P1 meter extended" author="szelessavmuhely.hu" version="1.1.0">
 	<description>
-		<h2>Home Wizard Electric P1 meter</h2><br/>
+		<h2>Home Wizard Electric P1 meter extended</h2><br/>
 		<br/>
 	</description>
 	<params>
@@ -248,7 +248,7 @@ class BasePlugin:
 			self.addfavorite(Devices[46].ID)
 		if 47 not in Devices:
 			Domoticz.Device(Name= self.tl.t("Current - daily consumption"), Unit=47, Type=250, Subtype=1, Used=1).Create()
-			devicecreated.append(deviceparam(47, 0, "0"))
+			devicecreated.append(deviceparam(47, 0, "0;0;0;0;0;0"))
 			self.addfavorite(Devices[47].ID)
 
 		for device in devicecreated:
