@@ -63,7 +63,7 @@ class TranslationLoader:
 	def __init__(self, language="en"):
 		self.translations = self.load_translations(language)
 		if not self.translations:
-			Domoticz.Debug("An error occurred while loading the translations!")
+			Domoticz.Debug("An error occurred while loading the translations! | Hiba történt a fordítások betöltésekor!")
 			self.translations = self.load_translations("en") 
 
 	def load_translations(self, language):
@@ -72,7 +72,7 @@ class TranslationLoader:
 			with open(file_path, 'r', encoding='utf-8') as file:
 				return json.load(file)
 		except (FileNotFoundError, json.JSONDecodeError) as e:
-			Domoticz.Debug(f"Error loading the file '{file_path}': {e}")
+			Domoticz.Debug(f"Error loading the file '{file_path}' | Hiba a(z) '{file_path}' fájl betöltésekor: {e}")
 			return {} 
 
 	def t(self, text):
@@ -99,11 +99,11 @@ class BasePlugin:
 			Domoticz.Debugging(1)
 			DumpConfigToLog()
 		
-		# If data interval between 10 sec. and 5 min.
+		# Accept data intervals between 10 seconds and 5 minutes | 10 másodperc és 5 perc közötti frissítési időköz elfogadása
 		if 10 <= int(Parameters["Mode2"]) <= 300:
 			self.dataInterval = int(Parameters["Mode2"])
 		else:
-			# If not, set to 60 sec.
+			# Otherwise, use 60 seconds | Egyébként 60 másodperc használata
 			self.dataInterval = 60
 
 		devicecreated = []
@@ -262,14 +262,14 @@ class BasePlugin:
 
 	def onCommand(self, Unit, Command, Level, Color):
 
-		Domoticz.Debug("onCommand called for Unit {}: Command '{}', Level: {}".format(Unit, Command, Level))
+		Domoticz.Debug("onCommand called for Unit {}: Command '{}', Level: {} | Parancs érkezett az egységhez: {}, parancs: '{}', szint: {}".format(Unit, Command, Level, Unit, Command, Level))
 
 
 	def onHeartbeat(self):
 
 		self.dataIntervalCount += 10
 
-		#------- Collect data -------
+		#------- Collect data | Adatok lekérése -------
 		if ( self.dataIntervalCount >= self.dataInterval ):
 			self.dataIntervalCount = 0
 			self.readMeter()
@@ -329,20 +329,20 @@ class BasePlugin:
 		# Unit 3: Total bidirectional energy throughput (import + export) | Összes kétirányú energiaforgalom (vételezés + visszatáplálás)
 		Devices[3].Update(0, f"{import_w + export_w};{import_wh + export_wh}")
 
-		# --- import energia tarifánként (kWh) ---
+		# --- Imported energy by tariff (kWh) | Vételezett energia tarifánként (kWh) ---
 		Devices[4].Update(0, f"{self._f(data,'active_import_energy_tariff_1')}")
 		Devices[5].Update(0, f"{self._f(data,'active_import_energy_tariff_2')}")
 		Devices[6].Update(0, f"{self._f(data,'active_import_energy_tariff_3')}")
 		Devices[7].Update(0, f"{self._f(data,'active_import_energy_tariff_4')}")
 
-		# --- export energia tarifánként (kWh) ---
+		# --- Exported energy by tariff (kWh) | Visszatáplált energia tarifánként (kWh) ---
 		Devices[8].Update(0, f"{self._f(data,'active_export_energy_tariff_1')}")
 		Devices[9].Update(0, f"{self._f(data,'active_export_energy_tariff_2')}")
 		Devices[10].Update(0, f"{self._f(data,'active_export_energy_tariff_3')}")
 		Devices[11].Update(0, f"{self._f(data,'active_export_energy_tariff_4')}")
 
 
-		# --- Meddő energiák (kVArh) ---
+		# --- Reactive energy (kVArh) | Meddő energiák (kVArh) ---
 		Devices[12].Update(0, f"{self._f(data,'reactive_import_energy')}")
 		Devices[13].Update(0, f"{self._f(data,'reactive_export_energy')}")
 		Devices[14].Update(0, f"{self._f(data,'reactive_energy_qi')}")
@@ -350,7 +350,7 @@ class BasePlugin:
 		Devices[16].Update(0, f"{self._f(data,'reactive_energy_qiii')}")
 		Devices[17].Update(0, f"{self._f(data,'reactive_energy_qiv')}")
 
-		# --- Pillanatnyi teljesítmények (kW) ---
+		# --- Instantaneous active power (kW) | Pillanatnyi hatásos teljesítmények (kW) ---
 		Devices[18].Update(0, f"{self._f(data,'instantaneous_power_import')}")
 		Devices[19].Update(0, f"{self._f(data,'instantaneous_power_export')}")
 
@@ -362,18 +362,18 @@ class BasePlugin:
 		Devices[24].Update(0, f"{self._f(data,'instantaneous_power_export_l2')}")
 		Devices[25].Update(0, f"{self._f(data,'instantaneous_power_export_l3')}")
 
-		# --- Pillanatnyi meddő teljesítmény ---
+		# --- Instantaneous reactive power | Pillanatnyi meddő teljesítmény ---
 		Devices[26].Update(0, f"{self._f(data,'instantaneous_reactive_power_qi')}")
 		Devices[27].Update(0, f"{self._f(data,'instantaneous_reactive_power_qii')}")
 		Devices[28].Update(0, f"{self._f(data,'instantaneous_reactive_power_qiii')}")
 		Devices[29].Update(0, f"{self._f(data,'instantaneous_reactive_power_qiv')}")
 
-		# --- Feszültségek ---
+		# --- Voltages | Feszültségek ---
 		Devices[30].Update(0, f"{self._f(data,'voltage_phase_l1')}")
 		Devices[31].Update(0, f"{self._f(data,'voltage_phase_l2')}")
 		Devices[32].Update(0, f"{self._f(data,'voltage_phase_l3')}")
 
-		# --- Áramok ---
+		# --- Currents | Áramok ---
 		Devices[33].Update(0, f"{self._f(data,'current_phase_l1')}")
 		Devices[34].Update(0, f"{self._f(data,'current_phase_l2')}")
 		Devices[35].Update(0, f"{self._f(data,'current_phase_l3')}")
@@ -382,26 +382,26 @@ class BasePlugin:
 		Devices[37].Update(0, f"{self._f(data,'current_phase_Bl2')}")
 		Devices[38].Update(0, f"{self._f(data,'current_phase_Bl3')}")
 
-		# --- Frekvencia ---
+		# --- Frequency | Frekvencia ---
 		Devices[39].Update(0, f"{self._f(data,'frequency')}")
 
-		# --- Teljesítménytényezők ---
+		# --- Power factors | Teljesítménytényezők ---
 		Devices[40].Update(0, f"{self._f(data,'power_factor')}")
 		Devices[41].Update(0, f"{self._f(data,'power_factor_l1')}")
 		Devices[42].Update(0, f"{self._f(data,'power_factor_l2')}")
 		Devices[43].Update(0, f"{self._f(data,'power_factor_l3')}")
 
-		# --- Mérő sorozatszám ---
+		# --- Meter serial number | Mérő sorozatszáma ---
 		Devices[44].Update(0, self._s(data,'meter_serial_number'))
 
-		# --- Kismegszakító ---
+		# --- Circuit breaker | Kismegszakító ---
 		cb = self._s(data,'circuit_breaker_status')
 		if cb == "ON":
 			Devices[45].Update(1, "On")
 		else:
 			Devices[45].Update(0, "Off")
 
-		# --- AKTÍV TARIFA (Selector) ---
+		# --- Active tariff (selector) | Aktív tarifa (választó) ---
 		tariff = data.get("current_tariff", "----")
 
 		tariff_text = {
@@ -413,22 +413,22 @@ class BasePlugin:
 
 		Devices[46].Update(0, tariff_text)
 
-		# --- kWh értékek (FLOAT kWh → INT Wh) ---
+		# --- Energy conversion (float kWh to integer Wh) | Energia átalakítása (lebegőpontos kWh-ról egész Wh-ra) ---
 		import_t1_f = int((self._f(data, "active_import_energy_tariff_1") or 0.0) * 1000)
 		import_t2_f = int((self._f(data, "active_import_energy_tariff_2") or 0.0) * 1000)
 		export_t1_f = int((self._f(data, "active_export_energy_tariff_1") or 0.0) * 1000)
 		export_t2_f = int((self._f(data, "active_export_energy_tariff_2") or 0.0) * 1000)
 
 
-		# --- pillanatnyi teljesítmény (WATT, FLOAT!) ---
+		# --- Instantaneous power (watts, floating point) | Pillanatnyi teljesítmény (watt, lebegőpontos) ---
 		import_w_f = (self._f(data, "instantaneous_power_import") or 0.0) * 1000
 		export_w_f = (self._f(data, "instantaneous_power_export") or 0.0) * 1000
 
-		# --- EGÉSZRE kerekítés ---
+		# --- Round to integers | Kerekítés egész számokra ---
 		import_w_i  = int(round(import_w_f))
 		export_w_i  = int(round(export_w_f))
 
-		# --- P1 Smart Meter sValue (CSAK EGÉSZ!) ---
+		# --- P1 smart meter sValue (integers only) | P1 okosmérő sValue (csak egész számok) ---
 		sValue = f"{import_t1_f};{import_t2_f};{export_t1_f};{export_t2_f};{import_w_i};{export_w_i}"
 
 		Devices[47].Update(0, sValue)
@@ -480,13 +480,13 @@ def onHeartbeat():
 	_plugin.onHeartbeat()
 
 
-# Plugin utility functions ---------------------------------------------------
+# Plugin utility functions | Beépülőmodul segédfüggvényei ---------------------------------------------------
 
 def P1API():
 
 	resultJson = None
 	url = "http://{}/api/v1/telegram".format(Parameters["Mode1"])
-	Domoticz.Debug("Calling HomeWizard P1 API: {}".format(url))
+	Domoticz.Debug("Calling HomeWizard P1 API | HomeWizard P1 API hívása: {}".format(url))
 
 	try:
 		req = request.Request(url)
@@ -496,10 +496,10 @@ def P1API():
 			telegram = response.read().decode('utf-8', errors='replace')
 			resultJson = parseHomeWizardTelegram(telegram)
 		else:
-			Domoticz.Error("HomeWizard P1 API: http error = {}".format(response.status))
+			Domoticz.Error("HomeWizard P1 API HTTP error | HomeWizard P1 API HTTP-hiba = {}".format(response.status))
 
 	except Exception as e:
-		Domoticz.Error("HomeWizard P1 API error: {}".format(e))
+		Domoticz.Error("HomeWizard P1 API error | HomeWizard P1 API-hiba: {}".format(e))
 
 	return resultJson
 
@@ -507,11 +507,11 @@ def DomoticzAPI(APICall):
 
 	resultJson = None
 	url = "http://{}:{}/json.htm?{}".format(Parameters["Address"], Parameters["Port"], parse.quote(APICall, safe="&="))
-	Domoticz.Debug("Calling domoticz API: {}".format(url))
+	Domoticz.Debug("Calling Domoticz API | Domoticz API hívása: {}".format(url))
 	try:
 		req = request.Request(url)
 		if Parameters["Username"] != "":
-			Domoticz.Debug("Add authentification for user {}".format(Parameters["Username"]))
+			Domoticz.Debug("Adding authentication for user | Hitelesítés hozzáadása a felhasználóhoz: {}".format(Parameters["Username"]))
 			credentials = ('%s:%s' % (Parameters["Username"], Parameters["Password"]))
 			encoded_credentials = base64.b64encode(credentials.encode('ascii'))
 			req.add_header('Authorization', 'Basic %s' % encoded_credentials.decode("ascii"))
@@ -520,28 +520,28 @@ def DomoticzAPI(APICall):
 		if response.status == 200:
 			resultJson = json.loads(response.read().decode('utf-8'))
 			if resultJson["status"] != "OK":
-				Domoticz.Error("Domoticz API returned an error: status = {}".format(resultJson["status"]))
+				Domoticz.Error("Domoticz API returned an error | A Domoticz API hibát adott vissza, állapot = {}".format(resultJson["status"]))
 				resultJson = None
 		else:
-			Domoticz.Error("Domoticz API: http error = {}".format(response.status))
+			Domoticz.Error("Domoticz API HTTP error | Domoticz API HTTP-hiba = {}".format(response.status))
 	except:
-		Domoticz.Error("Error calling '{}'".format(url))
+		Domoticz.Error("Error calling '{}' | Hiba a(z) '{}' hívásakor".format(url, url))
 	return resultJson
 
 
-# Generic helper functions
+# Generic helper functions | Általános segédfüggvények
 def DumpConfigToLog():
 	for x in Parameters:
 		if Parameters[x] != "":
 			Domoticz.Debug("'" + x + "':'" + str(Parameters[x]) + "'")
-	Domoticz.Debug("Device count: " + str(len(Devices)))
+	Domoticz.Debug("Device count | Eszközök száma: " + str(len(Devices)))
 	for x in Devices:
-		Domoticz.Debug("Device: " + str(x) + " - " + str(Devices[x]))
-		Domoticz.Debug("Device ID: '" + str(Devices[x].ID) + "'")
-		Domoticz.Debug("Device Name: '" + Devices[x].Name + "'")
-		Domoticz.Debug("Device nValue: " + str(Devices[x].nValue))
-		Domoticz.Debug("Device sValue: '" + Devices[x].sValue + "'")
-		Domoticz.Debug("Device LastLevel: " + str(Devices[x].LastLevel))
+		Domoticz.Debug("Device | Eszköz: " + str(x) + " - " + str(Devices[x]))
+		Domoticz.Debug("Device ID | Eszközazonosító: '" + str(Devices[x].ID) + "'")
+		Domoticz.Debug("Device Name | Eszköznév: '" + Devices[x].Name + "'")
+		Domoticz.Debug("Device nValue | Eszköz nValue: " + str(Devices[x].nValue))
+		Domoticz.Debug("Device sValue | Eszköz sValue: '" + Devices[x].sValue + "'")
+		Domoticz.Debug("Device LastLevel | Eszköz utolsó szintje: " + str(Devices[x].LastLevel))
 	return
 
 def _obis_value(telegram, obis, default=""):
@@ -566,12 +566,12 @@ def parseHomeWizardTelegram(telegram):
 
 	data = {}
 
-	# --- alap azonosítók ---
+	# --- Basic identifiers | Alapazonosítók ---
 	data["meter_serial_number"] = _obis_value(telegram, "0-0:96.1.0", "")
 	data["current_tariff"] = _obis_value(telegram, "0-0:96.14.0", "----")
 	data["circuit_breaker_status"] = _obis_value(telegram, "0-0:96.50.68", "OFF")
 
-	# --- aktív energia import / export ---
+	# --- Active energy import / export | Hatásos energia vételezés / visszatáplálás ---
 	data["active_import_energy_total"] = _obis_float(telegram, "1-0:1.8.0")
 	data["active_import_energy_tariff_1"] = _obis_float(telegram, "1-0:1.8.1")
 	data["active_import_energy_tariff_2"] = _obis_float(telegram, "1-0:1.8.2")
@@ -584,7 +584,7 @@ def parseHomeWizardTelegram(telegram):
 	data["active_export_energy_tariff_3"] = _obis_float(telegram, "1-0:2.8.3")
 	data["active_export_energy_tariff_4"] = _obis_float(telegram, "1-0:2.8.4")
 
-	# --- meddő energia ---
+	# --- Reactive energy | Meddő energia ---
 	data["reactive_import_energy"] = _obis_float(telegram, "1-0:3.8.0")
 	data["reactive_export_energy"] = _obis_float(telegram, "1-0:4.8.0")
 	data["reactive_energy_qi"] = _obis_float(telegram, "1-0:5.8.0")
@@ -592,24 +592,24 @@ def parseHomeWizardTelegram(telegram):
 	data["reactive_energy_qiii"] = _obis_float(telegram, "1-0:7.8.0")
 	data["reactive_energy_qiv"] = _obis_float(telegram, "1-0:8.8.0")
 
-	# --- feszültség ---
+	# --- Voltage | Feszültség ---
 	data["voltage_phase_l1"] = _obis_float(telegram, "1-0:32.7.0")
 	data["voltage_phase_l2"] = _obis_float(telegram, "1-0:52.7.0")
 	data["voltage_phase_l3"] = _obis_float(telegram, "1-0:72.7.0")
 
-	# --- áram ---
+	# --- Current | Áram ---
 	data["current_phase_l1"] = _obis_float(telegram, "1-0:31.7.0")
 	data["current_phase_l2"] = _obis_float(telegram, "1-0:51.7.0")
 	data["current_phase_l3"] = _obis_float(telegram, "1-0:71.7.0")
 
-	# --- cos phi / frekvencia ---
+	# --- Power factor / frequency | Teljesítménytényező / frekvencia ---
 	data["power_factor"] = _obis_float(telegram, "1-0:13.7.0")
 	data["power_factor_l1"] = _obis_float(telegram, "1-0:33.7.0")
 	data["power_factor_l2"] = _obis_float(telegram, "1-0:53.7.0")
 	data["power_factor_l3"] = _obis_float(telegram, "1-0:73.7.0")
 	data["frequency"] = _obis_float(telegram, "1-0:14.7.0")
 
-	# --- meddő áram / vakáram ---
+	# --- Reactive current | Meddő áram ---
 	pf1 = min(1.0, abs(data["power_factor_l1"]))
 	pf2 = min(1.0, abs(data["power_factor_l2"]))
 	pf3 = min(1.0, abs(data["power_factor_l3"]))
@@ -618,7 +618,7 @@ def parseHomeWizardTelegram(telegram):
 	data["current_phase_Bl2"] = data["current_phase_l2"] * math.sqrt(max(0.0, 1.0 - pf2 * pf2))
 	data["current_phase_Bl3"] = data["current_phase_l3"] * math.sqrt(max(0.0, 1.0 - pf3 * pf3))
 
-	# --- pillanatnyi aktív teljesítmény ---
+	# --- Instantaneous active power | Pillanatnyi hatásos teljesítmény ---
 	data["instantaneous_power_import"] = _obis_float(telegram, "1-0:1.7.0")
 	data["instantaneous_power_export"] = _obis_float(telegram, "1-0:2.7.0")
 
@@ -628,9 +628,9 @@ def parseHomeWizardTelegram(telegram):
 	data["instantaneous_reactive_power_qiii"] = _obis_float(telegram, "1-0:7.7.0")
 	data["instantaneous_reactive_power_qiv"] = _obis_float(telegram, "1-0:8.7.0")
 
-	# --- fázisonkénti aktív teljesítmény ---
-	# A telegramban külön import/export L1/L2/L3 sor nincs, ezért becslés:
-	# P = U * I * cos(phi) / 1000
+	# --- Active power by phase | Fázisonkénti hatásos teljesítmény ---
+	# The telegram has no separate import/export values for L1/L2/L3, so estimate them | A telegramban nincs külön import/export érték az L1/L2/L3 fázisokra, ezért becslést alkalmazunk
+	# P = U * I * cos(phi) / 1000 | Hatásos teljesítmény = feszültség × áram × teljesítménytényező / 1000
 	p1 = (data["voltage_phase_l1"] * data["current_phase_l1"] * data["power_factor_l1"]) / 1000.0
 	p2 = (data["voltage_phase_l2"] * data["current_phase_l2"] * data["power_factor_l2"]) / 1000.0
 	p3 = (data["voltage_phase_l3"] * data["current_phase_l3"] * data["power_factor_l3"]) / 1000.0
@@ -669,7 +669,7 @@ def parseHomeWizardTelegram(telegram):
 	data["instantaneous_power_export_l2"] = exp2_est * scale_exp
 	data["instantaneous_power_export_l3"] = exp3_est * scale_exp
 
-	# Ha összes export van, de fázisonként nincs, akkor egyszerű arányos bontás is lehet később.
-	# Most első körben maradjon stabil és egyszerű.
+	# If total export is available but per-phase export is not, proportional allocation may be added later | Ha az összes visszatáplálás ismert, de a fázisonkénti nem, később arányos felosztás is alkalmazható
+	# For now, keep the implementation stable and simple | Egyelőre maradjon stabil és egyszerű a megvalósítás
 
 	return data
