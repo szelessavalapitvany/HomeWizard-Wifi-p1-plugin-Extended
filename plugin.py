@@ -182,17 +182,18 @@ class BasePlugin:
 		if 25 not in Devices:
 			Domoticz.Device(Name= self.tl.t("Exported power L3"), Unit=25, Type=243, Subtype=31, Options={"Custom": "1;kW"}, Used=1).Create()
 			devicecreated.append(deviceparam(25, 0, "0"))
+				# Instantaneous reactive power by quadrant (kVAr) | Pillanatnyi meddő teljesítmény negyedek szerint (kVAr)
 		if 26 not in Devices:
-			Domoticz.Device(Name= self.tl.t("Reactive power QI"), Unit=26, Type=243, Subtype=31, Options={"Custom": "1;kVArh"}, Used=1).Create()
+			Domoticz.Device(Name=self.tl.t("Reactive power QI"), Unit=26, Type=243, Subtype=31, Options={"Custom": "1;kVAr"}, Used=1).Create()
 			devicecreated.append(deviceparam(26, 0, "0"))
 		if 27 not in Devices:
-			Domoticz.Device(Name= self.tl.t("Reactive power QII"), Unit=27, Type=243, Subtype=31, Options={"Custom": "1;kVArh"}, Used=1).Create()
+			Domoticz.Device(Name=self.tl.t("Reactive power QII"), Unit=27, Type=243, Subtype=31, Options={"Custom": "1;kVAr"}, Used=1).Create()
 			devicecreated.append(deviceparam(27, 0, "0"))
 		if 28 not in Devices:
-			Domoticz.Device(Name= self.tl.t("Reactive power QIII"), Unit=28, Type=243, Subtype=31, Options={"Custom": "1;kVArh"}, Used=1).Create()
+			Domoticz.Device(Name=self.tl.t("Reactive power QIII"), Unit=28, Type=243, Subtype=31, Options={"Custom": "1;kVAr"}, Used=1).Create()
 			devicecreated.append(deviceparam(28, 0, "0"))
 		if 29 not in Devices:
-			Domoticz.Device(Name= self.tl.t("Reactive power QIV"), Unit=29, Type=243, Subtype=31, Options={"Custom": "1;kVArh"}, Used=1).Create()
+			Domoticz.Device(Name=self.tl.t("Reactive power QIV"), Unit=29, Type=243, Subtype=31, Options={"Custom": "1;kVAr"}, Used=1).Create()
 			devicecreated.append(deviceparam(29, 0, "0"))
 		if 30 not in Devices:
 			Domoticz.Device(Name= self.tl.t("Voltage L1"), Unit=30, Type=248, Subtype=8, Used=1).Create()
@@ -307,14 +308,26 @@ class BasePlugin:
 
 	def onMessage(self, data, status, extra):
 
-		# --- összesített import / export (P1 Smart Meter jelleg) ---
+		# Total energy measurements | Összesített energiaadatok
 		import_kwh = self._f(data, 'active_import_energy_total')
 		export_kwh = self._f(data, 'active_export_energy_total')
 
-		# Type=250 / Subtype=1 → KÖTELEZŐ: import;export
-		Devices[1].Update(0, f"{import_kwh};{export_kwh}")
-		Devices[2].Update(0, f"{import_kwh};{export_kwh}")
-		Devices[3].Update(0, f"{import_kwh};{export_kwh}")
+		# Convert energy from kWh to Wh | Energia átalakítása kWh-ról Wh-ra
+		import_wh = int(round(import_kwh * 1000))
+		export_wh = int(round(export_kwh * 1000))
+
+		# Convert instantaneous power from kW to W | Pillanatnyi teljesítmény átalakítása kW-ról W-ra
+		import_w = int(round(self._f(data, 'instantaneous_power_import') * 1000))
+		export_w = int(round(self._f(data, 'instantaneous_power_export') * 1000))
+
+		# Unit 1: Total imported energy and instantaneous power | Összes vételezett energia és pillanatnyi teljesítmény
+		Devices[1].Update(0, f"{import_w};{import_wh}")
+
+		# Unit 2: Total exported energy and instantaneous power | Összes visszatáplált energia és pillanatnyi teljesítmény
+		Devices[2].Update(0, f"{export_w};{export_wh}")
+
+		# Unit 3: Total bidirectional energy throughput (import + export) | Összes kétirányú energiaforgalom (vételezés + visszatáplálás)
+		Devices[3].Update(0, f"{import_w + export_w};{import_wh + export_wh}")
 
 		# --- import energia tarifánként (kWh) ---
 		Devices[4].Update(0, f"{self._f(data,'active_import_energy_tariff_1')}")
